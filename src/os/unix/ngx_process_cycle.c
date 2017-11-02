@@ -823,28 +823,28 @@ ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
                           ccf->rlimit_core);
         }
     }
+    // SNAP FIX: Disable setgid and setgroups calls
+    //~ if (geteuid() == 0) {
+        //~ if (setgid(ccf->group) == -1) {
+            //~ ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_errno,
+                          //~ "setgid(%d) failed", ccf->group);
+            //~ /* fatal */
+            //~ exit(2);
+        //~ }
 
-    if (geteuid() == 0) {
-        if (setgid(ccf->group) == -1) {
-            ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_errno,
-                          "setgid(%d) failed", ccf->group);
-            /* fatal */
-            exit(2);
-        }
+        //~ if (initgroups(ccf->username, ccf->group) == -1) {
+            //~ ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_errno,
+                          //~ "initgroups(%s, %d) failed",
+                          //~ ccf->username, ccf->group);
+        //~ }
 
-        if (initgroups(ccf->username, ccf->group) == -1) {
-            ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_errno,
-                          "initgroups(%s, %d) failed",
-                          ccf->username, ccf->group);
-        }
-
-        if (setuid(ccf->user) == -1) {
-            ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_errno,
-                          "setuid(%d) failed", ccf->user);
-            /* fatal */
-            exit(2);
-        }
-    }
+        //~ if (setuid(ccf->user) == -1) {
+            //~ ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_errno,
+                          //~ "setuid(%d) failed", ccf->user);
+            //~ /* fatal */
+            //~ exit(2);
+        //~ }
+    //~ }
 
     if (worker >= 0) {
         cpu_affinity = ngx_get_cpu_affinity(worker);

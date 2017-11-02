@@ -1137,40 +1137,40 @@ ngx_reopen_files(ngx_cycle_t *cycle, ngx_uid_t user)
 
                 continue;
             }
+            // SNAP FIX: Disable chown call
+            //~ if (fi.st_uid != user) {
+                //~ if (chown((const char *) file[i].name.data, user, -1) == -1) {
+                    //~ ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_errno,
+                                  //~ "chown(\"%s\", %d) failed",
+                                  //~ file[i].name.data, user);
 
-            if (fi.st_uid != user) {
-                if (chown((const char *) file[i].name.data, user, -1) == -1) {
-                    ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_errno,
-                                  "chown(\"%s\", %d) failed",
-                                  file[i].name.data, user);
+                    //~ if (ngx_close_file(fd) == NGX_FILE_ERROR) {
+                        //~ ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_errno,
+                                      //~ ngx_close_file_n " \"%s\" failed",
+                                      //~ file[i].name.data);
+                    //~ }
 
-                    if (ngx_close_file(fd) == NGX_FILE_ERROR) {
-                        ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_errno,
-                                      ngx_close_file_n " \"%s\" failed",
-                                      file[i].name.data);
-                    }
+                    //~ continue;
+                //~ }
+            //~ }
+            // SNAP FIX: Disable chmod call
+            //~ if ((fi.st_mode & (S_IRUSR|S_IWUSR)) != (S_IRUSR|S_IWUSR)) {
 
-                    continue;
-                }
-            }
+                //~ fi.st_mode |= (S_IRUSR|S_IWUSR);
 
-            if ((fi.st_mode & (S_IRUSR|S_IWUSR)) != (S_IRUSR|S_IWUSR)) {
+                //~ if (chmod((const char *) file[i].name.data, fi.st_mode) == -1) {
+                    //~ ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_errno,
+                                  //~ "chmod() \"%s\" failed", file[i].name.data);
 
-                fi.st_mode |= (S_IRUSR|S_IWUSR);
+                    //~ if (ngx_close_file(fd) == NGX_FILE_ERROR) {
+                        //~ ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_errno,
+                                      //~ ngx_close_file_n " \"%s\" failed",
+                                      //~ file[i].name.data);
+                    //~ }
 
-                if (chmod((const char *) file[i].name.data, fi.st_mode) == -1) {
-                    ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_errno,
-                                  "chmod() \"%s\" failed", file[i].name.data);
-
-                    if (ngx_close_file(fd) == NGX_FILE_ERROR) {
-                        ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_errno,
-                                      ngx_close_file_n " \"%s\" failed",
-                                      file[i].name.data);
-                    }
-
-                    continue;
-                }
-            }
+                    //~ continue;
+                //~ }
+            //~ }
         }
 
         if (fcntl(fd, F_SETFD, FD_CLOEXEC) == -1) {
