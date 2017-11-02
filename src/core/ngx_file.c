@@ -635,7 +635,7 @@ ngx_create_paths(ngx_cycle_t *cycle, ngx_uid_t user)
                               //~ path[i]->name.data, user);
                 //~ return NGX_ERROR;
             //~ }
-        }
+        //~ }
 
         if ((fi.st_mode & (S_IRUSR|S_IWUSR|S_IXUSR))
                                                   != (S_IRUSR|S_IWUSR|S_IXUSR))
